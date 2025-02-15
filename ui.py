@@ -1,38 +1,51 @@
-# ui/app.py
 import streamlit as st
 import numpy as np
 import pandas as pd
+import joblib
 from tensorflow.keras.models import load_model
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import StandardScaler
+from textblob import TextBlob
+import re
 
-# Load dataset and model
-data = pd.read_csv("Data/twitter_data.csv")
 model = load_model("models/trend_predictor.h5")
 
-# Encode hashtags
-label_encoder = LabelEncoder()
-data['hashtag_encoded'] = label_encoder.fit_transform(data['hashtag'])
+scaler = joblib.load('models/scaler.pkl')
 
-# Normalize counts
-scaler = StandardScaler()
-scaler.fit(data['count'].values.reshape(-1, 1))
+# Sentiment analysis function
+def clean_text(text):
+    text = re.sub(r'http\S+|www\S+|https\S+', '', text)  # Remove URLs
+    text = re.sub(r'@\w+', '', text)  # Remove mentions
+    text = re.sub(r'#\w+', '', text)  # Remove hashtags
+    text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
+    return text
 
+def get_sentiment(text):
+    cleaned_text = clean_text(text)
+    sentiment = TextBlob(cleaned_text).sentiment.polarity
+    return sentiment
+
+# Streamlit Interface
 st.title("Hashtag Popularity Predictor")
 
-# User input: Hashtag
+# User input for hashtag content
 user_input = st.text_input("Enter a hashtag (e.g., #AI):")
 
 if st.button("Predict"):
     if user_input:
-        # Encode the input hashtag
-        try:
-            encoded_hashtag = label_encoder.transform([user_input])
-            # Predict popularity
-            predicted_count = model.predict(np.array([encoded_hashtag]))
-            # Inverse transform to get actual count
-            actual_count = scaler.inverse_transform(predicted_count.reshape(-1, 1))[0][0]
-            st.write(f"Predicted Popularity (Count): {int(actual_count)}")
-        except ValueError:
-            st.write("Hashtag not found in the dataset.")
+        # Preprocessing for user input
+        sentiment = get_sentiment(user_input)
+        features = np.array([[sentiment]])
+        
+        # Ensure features are in the correct format before scaling
+
+        scaled_features = scaler.transform(features).reshape(-1,1)
+    
+        # Predict popularity
+        predicted_score = model.predict(scaled_features)
+    
+        # Inverse transform to get actual score
+        actual_score = scaler.inverse_transform(predicted_score.reshape(-1, 1))[0][0] 
+        # Display the predicted score and category
+        st.write(f"Predicted Popularity (Score): {actual_score}")
     else:
         st.write("Please enter a hashtag.")

@@ -2,13 +2,10 @@ pandas
 numpy
 tensorflow
 scikit-learn
-torch
-transformers
+textblob
 prophet
 spacy
 nltk
-langchain
-openai
 fastapi
 uvicorn
 streamlit

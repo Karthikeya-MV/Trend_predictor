@@ -42,7 +42,7 @@ Clean and prepare text data:
 ```bash
 python preprocess.py
 ```
-**Output:** `Data/twitter_data.csv`
+**Output:** `Data/data.csv`
 
 ### **3 Train Models**
 Train LSTM & Prophet for prediction:
