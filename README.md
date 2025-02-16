@@ -2,24 +2,27 @@
 ```Author: Mantripragada Venkata Karthikeya```
 ---
 ## Overview
-This project predicts trending hashtags by scraping data from Twitter and Reddit, preprocessing the text, and training predictive models (**LSTM & Prophet**). The solution is deployed using **FastAPI** and features a user-friendly interface via **Streamlit**.
+This project predicts trending hashtags by scraping data from Twitter and Reddit, preprocessing the text, and training predictive models (**Word2Vec, Sentiment Polarity and K-Means Clustering**). The solution is deployed features a user-friendly interface via **Streamlit**.
 
 ---
 
 ## Features
 - **Automated Data Collection**: Scrapes trending hashtags from Twitter & Reddit.
-- **Advanced NLP Processing**: Cleans and preprocesses text data.
-- **Predictive Modeling**: Uses **LSTM** (deep learning) and **Prophet** (time-series forecasting).
-- **Scalable API Deployment**: Powered by **FastAPI**.
+- **Advanced NLP Processing**: Cleans and preprocesses text data and Word Embedding.
+- **Predictive Modeling**: Uses **Word2Vec Gensim embeddings and Sentiment Polarity** (deep learning) and **K-Means Clusturing** (For Popularity classification).
 - **Interactive User Interface**: Choose between **Streamlit**.
 ---
 
 ## Project Structure
 ```
 trend_predictor/
-│── api.py            # FastAPI backend
+│── Data/
+    │── data.csv
+    │── other files used in preprocessing
+│── models/
+    │── saved models after training
 │── preprocess.py     # Text preprocessing
-│── model.py          # LSTM & Prophet models
+│── model.py          # Training
 │── ui.py             # Streamlit UI
 │── requirements.txt  # Dependencies
 │── README.md         # Documentation
@@ -45,21 +48,13 @@ python preprocess.py
 **Output:** `Data/data.csv`
 
 ### **3 Train Models**
-Train LSTM & Prophet for prediction:
+Train model for prediction:
 ```bash
 python model.py
 ```
-**Output:** `models/trend_predictor.h5`
+**Output:** `models/word2vec.model and models/kmeans.pkl`
 
-### **4 Start FastAPI Backend**
-Launch the API server:
-```bash
-uvicorn api.main:app --reload
-```
-**API Running at:** `http://127.0.0.1:8000`
-**Test:** Open `http://127.0.0.1:8000/predict?hashtag=#Example`
-
-### **5 Run UI**
+### **4 Run UI**
 #### **Streamlit UI**
 ```bash
 streamlit run ui.py
@@ -69,5 +64,4 @@ streamlit run ui.py
 ---
 
 ## Conclusion
-This project provides a complete pipeline for predicting social media trends using **data scraping, NLP, deep learning, and time-series forecasting**. It is designed to be scalable, efficient, and easy to use.
-
+This project provides a complete pipeline for predicting social media trends using **data scraping, NLP, deep learning**. It is designed to be scalable, efficient, and easy to use.

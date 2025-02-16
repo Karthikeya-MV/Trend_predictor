@@ -3,9 +3,7 @@ numpy
 tensorflow
 scikit-learn
 textblob
-prophet
+gensim
 spacy
 nltk
-fastapi
-uvicorn
 streamlit
